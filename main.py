@@ -1,6 +1,8 @@
 from tkinter import *
 import pandas
 import random
+
+current_car={}
 to_learn={}
 BACKGROUND_COLOR = "#B1DDC6"
 
@@ -11,7 +13,7 @@ except FileNotFoundError:
     to_learn=original_data.to_dict(orient="records")
 else:
     to_learn = data.to_dict(orient="records")
-    current_card={}
+
 
 #-----------Creating Flash Card---------------------#
 
@@ -36,6 +38,7 @@ def flip_card():
 # ------------------known words----------------------#
 def is_known():
     to_learn.remove(current_card)
+    print(len(to_learn))
     data=pandas.DataFrame(to_learn)
     data.to_csv("data/words_need_to_learn",index=None)
     next_card()
@@ -43,15 +46,16 @@ def is_known():
 
 #------------------Window Creation------------------#
 my_flash_card = Tk()
-my_flash_card.title("Learn German Language")
+my_flash_card.title("Learn German")
 my_flash_card.config(padx=50 , pady=50 , bg=BACKGROUND_COLOR)
+
 flip_timer=my_flash_card.after(3000,func=flip_card)
 
 canvas = Canvas(width=800,height=526)
 front_image = PhotoImage(file="images/card_front.png")
 back_image = PhotoImage(file="images/card_back.png")
-card_back_image=canvas.create_image(400,263,image=back_image)
-card_front_image=canvas.create_image(400,263,image=front_image)
+
+card_back_image=canvas.create_image(400,263,image=front_image)
 
 
 card_title =canvas.create_text(400,150,text="Title",font=("Ariel",40,"italic"))
