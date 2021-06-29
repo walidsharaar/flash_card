@@ -5,26 +5,37 @@ import random
 BACKGROUND_COLOR = "#B1DDC6"
 data=pandas.read_csv("data/words_list.csv")
 to_learn = data.to_dict(orient="records")
+current_card={}
 
 #-----------Creating Flash Card---------------------#
 
 def next_card():
+    global current_card,flip_timer
+    my_flash_card.after_cancel(flip_timer)
     current_card=random.choice(to_learn)
     canvas.itemconfig(card_title,text="German")
-    canvas.itemconfig(card_word,text=current_card["German"])
+    canvas.itemconfig(card_word,text=current_card["German"],fill="black")
+    canvas.itemconfig(card_back_image,image=front_image)
+    my_flash_card.after(3000, func=flip_card)
 
-
-
+#------------------Flip Card------------------------#
+def flip_card():
+    canvas.itemconfig(card_title,text="English", fill="white")
+    canvas.itemconfig(card_word,text=current_card["English"])
+    canvas.itemconfig(card_back_image,image=back_image)
 
 
 #------------------Window Creation------------------#
 my_flash_card = Tk()
 my_flash_card.title("Learn German Language")
 my_flash_card.config(padx=50 , pady=50 , bg=BACKGROUND_COLOR)
+flip_timer=my_flash_card.after(3000,func=flip_card)
 
 canvas = Canvas(width=800,height=526)
 front_image = PhotoImage(file="images/card_front.png")
-canvas.create_image(400,263,image=front_image)
+back_image = PhotoImage(file="images/card_back.png")
+card_back_image=canvas.create_image(400,263,image=back_image)
+card_front_image=canvas.create_image(400,263,image=front_image)
 
 
 card_title =canvas.create_text(400,150,text="Title",font=("Ariel",40,"italic"))
